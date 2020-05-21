@@ -5,7 +5,7 @@ public class AppConstants {
     private AppConstants() {}
 
 
-    public static final String APP_TITLE = "Scruminium";
+    public static final String APP_TITLE = "Scruman";
 
     public static final String ROOT_URL = "/";
     public static final String LOGIN_URL = "/login";
