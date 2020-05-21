@@ -1,19 +1,11 @@
-insert into roles (name) values
-                                ('ROLE_ADMIN'),
-                                ('ROLE_USER');
+insert into roles (name) values ('ROLE_ADMIN'), ('ROLE_USER');
 
-insert into statuses (name) values
-                                   ('None'),
-                                   ('Ready'),
-                                   ('Work in progress'),
-                                   ('Complete'),
-                                   ('Cancelled');
+insert into statuses (name) values ('None'), ('Ready'), ('Work in progress'), ('Complete'), ('Cancelled');
 
 insert into users (first_name, last_name, username, email, password, is_account_expired, is_account_locked, is_credentials_expired, is_enabled) values
-    ('Patryk', 'Kosieradzki', 'k0siara', 'k0siara@scruminium.com', '$2a$10$uNAzprV2iWcc4eac.FEiYuREKtciHG7XntQmwZ6etcqvskLaC3I22', false, false, false, true);
+    ('Admin', 'Admin', 'admin', 'admin@admin.com', '$2a$10$zDXtXHls88TSM4cC5AMsnevEA70FMUiqrZ5DP3N5.xJ/hVBssAJ.W', false, false, false, true);
 
-insert into user_roles (user_id, role_id) values
-                                                 (1, 1);
+insert into user_roles (user_id, role_id) values (1, 1);
 
 insert into projects (name, description) values ('Project 1', 'Testowy projekt w aplikacji Scruminium');
 insert into projects (name, description) values ('Project 2', 'Testowy projekt w aplikacji Scruminium');

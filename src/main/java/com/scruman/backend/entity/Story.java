@@ -19,15 +19,12 @@ public class Story extends AbstractEntity {
 
     private Long number;
 
-    @Column(name = "short_description")
     private String shortDescription;
 
     private String description;
 
-    @Column(name = "story_points")
     private Integer storyPoints;
 
-    @Column(name = "acceptance_criteria")
     private String acceptanceCriteria;
 
     @ManyToOne(cascade = CascadeType.PERSIST)

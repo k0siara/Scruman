@@ -28,7 +28,6 @@ public class UserProject implements Serializable {
     @MapsId("projectId")
     private Project project;
 
-    @Column(name = "user_capacity")
     private Integer userCapacity;
 
 }

@@ -19,10 +19,8 @@ public class Sprint extends AbstractEntity{
 
     private String description;
 
-    @Column(name = "begin_date")
     private LocalDate beginDate;
 
-    @Column(name = "end_date")
     private LocalDate endDate;
 
     @ManyToOne(cascade = CascadeType.PERSIST)

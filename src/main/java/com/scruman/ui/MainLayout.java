@@ -168,6 +168,7 @@ public class MainLayout extends FlexBoxLayout
 				menu.addNaviItem(VaadinIcon.CLIPBOARD_TEXT, "Product Backlog", ProductBacklog.class);
 			}
 
+			menu.addNaviItem(VaadinIcon.COG_O, "Members", Members.class);
 			menu.addNaviItem(VaadinIcon.COG_O, "Settings", Settings.class);
 			menu.addNaviItem(VaadinIcon.SIGN_OUT, "Logout", AppConstants.LOGOUT_URL);
 		} else {
