@@ -1,7 +1,6 @@
 package com.scruman.ui.components.navigation.bar;
 
 import com.scruman.AppConstants;
-import com.scruman.backend.entity.Project;
 import com.scruman.backend.security.SecurityUtils;
 import com.scruman.ui.MainLayout;
 import com.scruman.ui.components.FlexBoxLayout;
@@ -16,7 +15,6 @@ import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.contextmenu.ContextMenu;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.H4;

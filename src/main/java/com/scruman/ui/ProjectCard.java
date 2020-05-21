@@ -1,5 +1,8 @@
 package com.scruman.ui;
 
+import com.scruman.ui.components.FlexBoxLayout;
+import com.scruman.ui.layout.size.Bottom;
+import com.scruman.ui.layout.size.Left;
 import com.scruman.ui.util.LumoStyles;
 import com.scruman.ui.util.UIUtils;
 import com.scruman.ui.util.css.BorderRadius;
@@ -9,31 +12,27 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 
-public class ProjectCard extends Div {
+public class ProjectCard extends FlexBoxLayout {
 
     private static final String CLASS_NAME = "project_card";
 
-    private Div header;
-    private Div content;
-    private Div footer;
-
     public ProjectCard() {
-        header = createHeader();
-        content = createContent();
-        footer = createFooter();
+        Div header = createHeader();
+        Div content = createContent();
+        Div footer = createFooter();
 
-        add(header, content, footer);
-
-        UIUtils.setBackgroundColor(LumoStyles.Color.BASE_COLOR, this);
-        UIUtils.setBorderRadius(BorderRadius.S, this);
-        UIUtils.setShadow(Shadow.XS, this);
-        addClassNames(CLASS_NAME, LumoStyles.Padding.Vertical.M, LumoStyles.Padding.Horizontal.M);
+        Div card = new Div(header, content, footer);
+        UIUtils.setBackgroundColor(LumoStyles.Color.BASE_COLOR, card);
+        UIUtils.setBorderRadius(BorderRadius.S, card);
+        UIUtils.setShadow(Shadow.XS, card);
+        card.addClassNames(CLASS_NAME, LumoStyles.Padding.Vertical.M, LumoStyles.Padding.Horizontal.M);
 
         setWidth("300px");
         setHeight("200px");
+        setPadding(Bottom.XL, Left.RESPONSIVE_L);
+        add(card);
     }
 
     private Div createHeader() {

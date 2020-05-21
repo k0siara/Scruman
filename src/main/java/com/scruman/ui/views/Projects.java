@@ -30,34 +30,12 @@ public class Projects extends ViewFrame {
     public Projects() {
         FlexBoxLayout header = createHeader(VaadinIcon.RECORDS, "Search Projects");
 
-        ProjectCard projectCard = new ProjectCard();
-        ProjectCard projectCard2 = new ProjectCard();
-        ProjectCard projectCard3 = new ProjectCard();
+        FlexBoxLayout content = new FlexBoxLayout();
+        for (int i = 0; i < 5; i++) {
+            content.add(new ProjectCard());
+        }
 
-//        Div card = new Div();
-//        card.setHeight("200px");
-//        card.setWidth("200px");
-//
-//        UIUtils.setBackgroundColor(LumoStyles.Color.BASE_COLOR, card);
-//        UIUtils.setBorderRadius(BorderRadius.S, card);
-//        UIUtils.setShadow(Shadow.XS, card);
-//
-        FlexBoxLayout project = new FlexBoxLayout(projectCard);
-//        project.setFlexDirection(FlexDirection.COLUMN);
-        project.setPadding(Bottom.XL, Left.RESPONSIVE_L);
-
-        FlexBoxLayout project2 = new FlexBoxLayout(projectCard2);
-//        project.setFlexDirection(FlexDirection.COLUMN);
-        project2.setPadding(Bottom.XL, Left.RESPONSIVE_L);
-
-        FlexBoxLayout project3 = new FlexBoxLayout(projectCard3);
-//        project.setFlexDirection(FlexDirection.COLUMN);
-        project3.setPadding(Bottom.XL, Left.RESPONSIVE_L);
-
-        FlexBoxLayout content = new FlexBoxLayout(project, project2, project3);
         content.setPadding(Horizontal.RESPONSIVE_X, Top.RESPONSIVE_X, Bottom.RESPONSIVE_M);
-//        content.setAlignItems(FlexComponent.Alignment.CENTER);
-//        content.setFlexDirection(FlexDirection.COLUMN);
         setViewContent(content);
     }
 

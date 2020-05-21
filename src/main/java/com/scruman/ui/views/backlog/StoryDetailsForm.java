@@ -137,7 +137,7 @@ public class StoryDetailsForm extends FormLayout {
 
     public void clearForm() {
         story = new Story();
-        Long currentProjectId = MainLayout.get().getAppBar().getUserProjectsComboBox().getValue().getId();
+        Long currentProjectId = MainLayout.get().getAppBar().getUserProjectsComboBox().getValue().getId(); // TODO: 22-May-20 change fo db data
 
         title.setValue("");
         shortDescription.setValue("");

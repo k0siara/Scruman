@@ -1,6 +1,7 @@
 package com.scruman.ui;
 
 import com.scruman.AppConstants;
+import com.scruman.app.HasLogger;
 import com.scruman.backend.entity.Project;
 import com.scruman.backend.entity.Sprint;
 import com.scruman.backend.entity.User;
@@ -32,6 +33,7 @@ import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.page.Viewport;
+import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.router.AfterNavigationEvent;
 import com.vaadin.flow.router.AfterNavigationObserver;
 import com.vaadin.flow.router.RouterLayout;
@@ -64,7 +66,7 @@ import static com.scruman.ui.util.UIUtils.IMG_PATH;
 @JsModule("@vaadin/vaadin-lumo-styles/badge")
 @Viewport("width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes")
 public class MainLayout extends FlexBoxLayout
-		implements RouterLayout, PageConfigurator, AfterNavigationObserver {
+		implements RouterLayout, PageConfigurator, AfterNavigationObserver, HasLogger {
 
 	private static final Logger log = LoggerFactory.getLogger(MainLayout.class);
 	private static final String CLASS_NAME = "root";
@@ -168,7 +170,7 @@ public class MainLayout extends FlexBoxLayout
 				menu.addNaviItem(VaadinIcon.CLIPBOARD_TEXT, "Product Backlog", ProductBacklog.class);
 			}
 
-			menu.addNaviItem(VaadinIcon.COG_O, "Members", Members.class);
+			menu.addNaviItem(VaadinIcon.GROUP, "Members", Members.class);
 			menu.addNaviItem(VaadinIcon.COG_O, "Settings", Settings.class);
 			menu.addNaviItem(VaadinIcon.SIGN_OUT, "Logout", AppConstants.LOGOUT_URL);
 		} else {
@@ -202,14 +204,10 @@ public class MainLayout extends FlexBoxLayout
 			}
 
 			userProjectsComboBox.addValueChangeListener(e -> {
-				if (e.getValue().equals(UserProjectsComboBox.NEW_PROJECT)) {
-					Notification.show("Not implemented yet.");
-				} else {
-					userService.saveLastOpenedProject(currentUser, e.getValue());
+				userService.saveLastOpenedProject(currentUser, e.getValue());
 
-					reloadMenu();
-					UI.getCurrent().navigate(Home.class);
-				}
+				reloadMenu();
+				UI.getCurrent().navigate(Home.class);
 			});
 			userProjectsComboBox.setVisible(true);
 
