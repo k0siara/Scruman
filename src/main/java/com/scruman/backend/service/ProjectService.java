@@ -39,4 +39,8 @@ public class ProjectService {
                 .map(UserProject::getUser)
                 .collect(Collectors.toList());
     }
+
+    public List<Project> getUserProjects(Long userId) {
+        return projectRepository.findAllByUserProjectsUserId(userId);
+    }
 }

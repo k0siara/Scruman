@@ -1,7 +1,12 @@
-package com.scruman.ui.views;
+package com.scruman.ui.views.projects;
 
+import com.scruman.app.HasLogger;
+import com.scruman.backend.entity.Project;
+import com.scruman.backend.entity.User;
+import com.scruman.backend.service.ProjectService;
+import com.scruman.backend.service.UserService;
 import com.scruman.ui.MainLayout;
-import com.scruman.ui.ProjectCard;
+import com.scruman.ui.views.ViewFrame;
 import com.scruman.ui.components.FlexBoxLayout;
 import com.scruman.ui.components.ListItem;
 import com.scruman.ui.layout.size.*;
@@ -20,23 +25,29 @@ import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 @PageTitle("Projects")
 @Route(value = "projects", layout = MainLayout.class)
-public class Projects extends ViewFrame {
+public class Projects extends ViewFrame implements HasLogger {
 
     private static final String CLASS_NAME = "projects";
 
-    public Projects() {
+    private UserService userService;
+    private ProjectService projectService;
+
+    private NewProjectDialog newProjectDialog = new NewProjectDialog();
+
+    @Autowired
+    public Projects(UserService userService, ProjectService projectService) {
+        this.userService = userService;
+        this.projectService = projectService;
+
         FlexBoxLayout header = createHeader(VaadinIcon.RECORDS, "Search Projects");
 
-        FlexBoxLayout content = new FlexBoxLayout();
-        for (int i = 0; i < 5; i++) {
-            content.add(new ProjectCard());
-        }
-
-        content.setPadding(Horizontal.RESPONSIVE_X, Top.RESPONSIVE_X, Bottom.RESPONSIVE_M);
-        setViewContent(content);
+        createCurrentUserProjects();
     }
 
     private FlexBoxLayout createHeader(VaadinIcon icon, String title) {
@@ -47,6 +58,24 @@ public class Projects extends ViewFrame {
         header.setMargin(Bottom.L, Horizontal.RESPONSIVE_L);
         header.setSpacing(Right.L);
         return header;
+    }
+
+    private void createCurrentUserProjects() {
+        User currentUser = userService.getCurrentUser();
+        List<Project> currentUserProjects = projectService.getUserProjects(currentUser.getId());
+        getLogger().debug("Found " + currentUserProjects.size() + " projects..");
+
+        FlexBoxLayout content = new FlexBoxLayout();
+
+        for (Project p : currentUserProjects) {
+            content.add(new ProjectCard(p));
+        }
+
+        NewProjectCard newProjectCard = new NewProjectCard(e -> newProjectDialog.open());
+        content.add(newProjectCard);
+
+        content.setPadding(Horizontal.RESPONSIVE_X, Top.RESPONSIVE_X, Bottom.RESPONSIVE_M);
+        setViewContent(content);
     }
 
     private Component createLogs() {
