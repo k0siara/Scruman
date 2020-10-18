@@ -1,10 +1,11 @@
 package com.scruman.ui.components.navigation.bar;
 
 import com.scruman.AppConstants;
+import com.scruman.backend.beans.CurrentUser;
+import com.scruman.backend.entity.User;
 import com.scruman.backend.security.SecurityUtils;
 import com.scruman.ui.MainLayout;
 import com.scruman.ui.components.FlexBoxLayout;
-import com.scruman.ui.components.UserProjectsComboBox;
 import com.scruman.ui.components.navigation.tab.NaviTab;
 import com.scruman.ui.components.navigation.tab.NaviTabs;
 import com.scruman.ui.util.LumoStyles;
@@ -17,8 +18,10 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.contextmenu.ContextMenu;
 import com.vaadin.flow.component.dependency.CssImport;
+import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.H4;
 import com.vaadin.flow.component.html.Image;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
@@ -41,7 +44,6 @@ public class AppBar extends FlexBoxLayout {
 
 	private H4 title;
 	private FlexBoxLayout actionItems;
-	private UserProjectsComboBox userProjectsComboBox;
 	private Image avatar;
 
 	private FlexBoxLayout tabContainer;
@@ -52,18 +54,21 @@ public class AppBar extends FlexBoxLayout {
 	private TextField search;
 	private Registration searchRegistration;
 
+	private CurrentUser currentUser;
+
 	public enum NavMode {
 		MENU, CONTEXTUAL
 	}
 
-	public AppBar(String title, NaviTab... tabs) {
+	public AppBar(String title, CurrentUser currentUser, NaviTab... tabs) {
 		setClassName(CLASS_NAME);
+
+		this.currentUser = currentUser;
 
 		initMenuIcon();
 		initContextIcon();
 		initTitle(title);
 		initSearch();
-		initUserProjects();
 		initAvatar();
 		initActionItems();
 		initContainer();
@@ -109,10 +114,6 @@ public class AppBar extends FlexBoxLayout {
 		search.setVisible(false);
 	}
 
-	private void initUserProjects() {
-		userProjectsComboBox = new UserProjectsComboBox();
-	}
-
 	private void initAvatar() {
 		avatar = new Image();
 		avatar.setClassName(CLASS_NAME + "__avatar");
@@ -139,8 +140,12 @@ public class AppBar extends FlexBoxLayout {
 	}
 
 	private void initContainer() {
+		Label userName = new Label();
+		if (SecurityUtils.isUserLoggedIn()) {
+			userName.setText(String.format("Welcome, %s!", currentUser.get().getFirstName()));
+		}
 		container = new FlexBoxLayout(menuIcon, contextIcon, title, search,
-				actionItems, userProjectsComboBox, avatar);
+				actionItems, userName, avatar);
 
 		container.addClassName(CLASS_NAME + "__container");
 		container.setAlignItems(FlexComponent.Alignment.CENTER);
@@ -215,10 +220,6 @@ public class AppBar extends FlexBoxLayout {
 		updateActionItemsVisibility();
 	}
 
-	public UserProjectsComboBox getUserProjectsComboBox() {
-		return userProjectsComboBox;
-	}
-
 	/* === AVATAR == */
 
 	public Image getAvatar() {
@@ -290,53 +291,6 @@ public class AppBar extends FlexBoxLayout {
 		updateTabsVisibility();
 	}
 
-	/* === ADD TAB BUTTON === */
-
-	public void setAddTabVisible(boolean visible) {
-		addTab.setVisible(visible);
-	}
-
-	/* === SEARCH === */
-
-	public void searchModeOn() {
-		menuIcon.setVisible(false);
-		title.setVisible(false);
-		actionItems.setVisible(false);
-		tabContainer.setVisible(false);
-
-		contextIcon.setIcon(new Icon(VaadinIcon.ARROW_BACKWARD));
-		contextIcon.setVisible(true);
-		searchRegistration = contextIcon
-				.addClickListener(e -> searchModeOff());
-
-		search.setVisible(true);
-		search.focus();
-	}
-
-	public void addSearchListener(HasValue.ValueChangeListener listener) {
-		search.addValueChangeListener(listener);
-	}
-
-	public void setSearchPlaceholder(String placeholder) {
-		search.setPlaceholder(placeholder);
-	}
-
-	private void searchModeOff() {
-		menuIcon.setVisible(true);
-		title.setVisible(true);
-		tabContainer.setVisible(true);
-
-		updateActionItemsVisibility();
-		updateTabsVisibility();
-
-		contextIcon.setVisible(false);
-		searchRegistration.remove();
-
-		search.clear();
-		search.setVisible(false);
-	}
-
-	/* === RESET === */
 
 	public void reset() {
 		title.setText("");

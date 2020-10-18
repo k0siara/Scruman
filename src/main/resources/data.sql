@@ -4,6 +4,10 @@ insert into statuses (name) values ('None'), ('Ready'), ('Work in progress'), ('
 
 insert into users (first_name, last_name, username, email, password, is_account_expired, is_account_locked, is_credentials_expired, is_enabled) values
     ('Admin', 'Admin', 'admin', 'admin@admin.com', '$2a$10$zDXtXHls88TSM4cC5AMsnevEA70FMUiqrZ5DP3N5.xJ/hVBssAJ.W', false, false, false, true);
+insert into users (first_name, last_name, username, email, password, is_account_expired, is_account_locked, is_credentials_expired, is_enabled) values
+('Admin2', 'Admin2', 'admin2', 'admin2@admin.com', '$2a$10$zDXtXHls88TSM4cC5AMsnevEA70FMUiqrZ5DP3N5.xJ/hVBssAJ.W', false, false, false, true);
+insert into users (first_name, last_name, username, email, password, is_account_expired, is_account_locked, is_credentials_expired, is_enabled) values
+('Admin3', 'Admin3', 'admin3', 'admin3@admin.com', '$2a$10$zDXtXHls88TSM4cC5AMsnevEA70FMUiqrZ5DP3N5.xJ/hVBssAJ.W', false, false, false, true);
 
 insert into user_roles (user_id, role_id) values (1, 1);
 

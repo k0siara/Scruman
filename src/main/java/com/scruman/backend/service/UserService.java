@@ -92,4 +92,8 @@ public class UserService {
     public boolean isPasswordCorrect(String value, String password) {
         return passwordEncoder.matches(value, password);
     }
+
+    public List<User> getAll() {
+        return userRepository.findAll();
+    }
 }

@@ -8,6 +8,7 @@ import com.scruman.backend.security.SecurityUtils;
 import com.scruman.backend.service.ProjectService;
 import com.scruman.backend.service.SprintService;
 import com.scruman.backend.service.StoryService;
+import com.scruman.backend.service.UserService;
 import com.scruman.ui.MainLayout;
 import com.scruman.ui.components.navigation.bar.AppBar;
 import com.scruman.ui.views.Home;
@@ -27,8 +28,8 @@ public class SprintBacklog extends StoriesView implements HasUrlParameter<String
     private Long sprintId;
 
     @Autowired
-    public SprintBacklog(StoryService storyService, SprintService sprintService, ProjectService projectService) {
-        super(storyService, sprintService, projectService);
+    public SprintBacklog(UserService userService, StoryService storyService, SprintService sprintService, ProjectService projectService) {
+        super(userService, storyService, sprintService, projectService);
     }
 
     @Override
@@ -75,9 +76,8 @@ public class SprintBacklog extends StoriesView implements HasUrlParameter<String
         if (selectedTab != null) {
             String status = StringUtils.capitalize(selectedTab.getLabel());
 
-            ComboBox<Project> userProjects = MainLayout.get().getAppBar().getUserProjectsComboBox();
-            if (!userProjects.isEmpty()) {
-                Project currentProject = userProjects.getValue();
+            Project currentProject = userService.getCurrentUser().getLastOpenedProject();
+            if (currentProject != null) {
                 grid.setItems(storyService.findAllByProjectAndSprintAndStatus(currentProject.getId(), sprintId, status));
             }
         }
