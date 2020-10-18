@@ -20,4 +20,8 @@ public class SprintService {
     public List<Sprint> findAllByProjectId(Long projectId) {
         return sprintRepository.findAllByProject_IdOrderByIdAsc(projectId);
     }
+
+    public Sprint save(Sprint sprint) {
+        return sprintRepository.save(sprint);
+    }
 }

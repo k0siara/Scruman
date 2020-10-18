@@ -15,24 +15,22 @@ import java.util.Set;
 @AllArgsConstructor
 public class Sprint extends AbstractEntity{
 
-    private String title;
+    public String title;
 
-    private String description;
+    public String description;
 
-    private LocalDate beginDate;
+    public LocalDate beginDate;
 
-    private LocalDate endDate;
+    public LocalDate endDate;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne
     @JoinColumn(name = "status_id")
-    private Status status;
+    public Status status;
 
     @OneToMany(mappedBy = "sprint", fetch = FetchType.EAGER)
-    private Set<Story> stories = new HashSet<>();
+    public Set<Story> stories = new HashSet<>();
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne
     @JoinColumn(name = "project_id")
-    private Project project;
-
-
+    public Project project;
 }

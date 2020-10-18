@@ -7,7 +7,7 @@ import com.scruman.backend.entity.Project;
 import com.scruman.backend.entity.Sprint;
 import com.scruman.backend.security.SecurityUtils;
 import com.scruman.backend.service.SprintService;
-import com.scruman.backend.service.UserService;
+import com.scruman.backend.service.StoryService;
 import com.scruman.ui.components.FlexBoxLayout;
 import com.scruman.ui.components.navigation.bar.AppBar;
 import com.scruman.ui.components.navigation.drawer.NaviDrawer;
@@ -70,6 +70,7 @@ public class MainLayout extends FlexBoxLayout
 
 	private CurrentUser currentUser;
 	private SprintService sprintService;
+	private StoryService storyService;
 
 	private FlexBoxLayout row;
 	private NaviDrawer naviDrawer;
@@ -81,9 +82,10 @@ public class MainLayout extends FlexBoxLayout
 	private AppBar appBar;
 
 	@Autowired
-	public MainLayout(CurrentUser currentUser, SprintService sprintService) {
+	public MainLayout(CurrentUser currentUser, SprintService sprintService, StoryService storyService) {
 		this.currentUser = currentUser;
 		this.sprintService = sprintService;
+		this.storyService = storyService;
 
 		VaadinSession.getCurrent()
 				.setErrorHandler((ErrorHandler) errorEvent -> {
@@ -156,7 +158,19 @@ public class MainLayout extends FlexBoxLayout
 
 				NaviItem newSprintNavItem = menu.addNaviItem(sprints, "New Sprint", "");
 				newSprintNavItem.onClick(event -> {
+					NewSprintDialog dialog = new NewSprintDialog(currentUser, storyService);
+					dialog.open();
 
+					dialog.onSave(e -> {
+						Sprint sprint = dialog.getSprint();
+						sprintService.save(sprint);
+						dialog.close();
+						UI.getCurrent().getPage().reload();
+					});
+
+					dialog.onCancel(e -> {
+						dialog.close();
+					});
 				});
 
 				menu.addNaviItem(VaadinIcon.CLIPBOARD_TEXT, "Product Backlog", ProductBacklog.class);
