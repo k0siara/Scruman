@@ -7,6 +7,7 @@ import com.scruman.backend.security.SecurityUtils;
 import com.scruman.backend.service.ProjectService;
 import com.scruman.backend.service.SprintService;
 import com.scruman.backend.service.StoryService;
+import com.scruman.backend.service.UserService;
 import com.scruman.ui.MainLayout;
 import com.scruman.ui.views.Home;
 import com.vaadin.flow.component.AttachEvent;
@@ -23,8 +24,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class ProductBacklog extends StoriesView implements BeforeEnterObserver, HasLogger {
 
     @Autowired
-    public ProductBacklog(ProjectService projectService, SprintService sprintService, StoryService storyService) {
-        super(storyService, sprintService, projectService);
+    public ProductBacklog(UserService userService, ProjectService projectService, SprintService sprintService, StoryService storyService) {
+        super(userService, storyService, sprintService, projectService);
     }
 
     @Override
@@ -38,10 +39,9 @@ public class ProductBacklog extends StoriesView implements BeforeEnterObserver, 
     private void loadData() {
         getLogger().debug("ProductBacklog loadData call");
 
-        ComboBox<Project> userProjects = MainLayout.get().getAppBar().getUserProjectsComboBox();
-        if (!userProjects.isEmpty()) {
+        Project currentProject = userService.getCurrentUser().getLastOpenedProject();
+        if (currentProject != null) {
             getLogger().debug("ProductBacklog userProjects notEmpty");
-            Project currentProject = userProjects.getValue();
             grid.setItems(storyService.findAllByProjectAndStatus(currentProject.getId(), "None"));
         } else {
             getLogger().debug("ProductBacklog userProjects empty");

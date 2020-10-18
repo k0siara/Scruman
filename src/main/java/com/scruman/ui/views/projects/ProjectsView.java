@@ -1,15 +1,17 @@
 package com.scruman.ui.views.projects;
 
 import com.scruman.app.HasLogger;
+import com.scruman.backend.beans.CurrentUser;
 import com.scruman.backend.entity.Project;
-import com.scruman.backend.entity.User;
 import com.scruman.backend.service.ProjectService;
 import com.scruman.backend.service.UserService;
 import com.scruman.ui.MainLayout;
-import com.scruman.ui.views.ViewFrame;
 import com.scruman.ui.components.FlexBoxLayout;
 import com.scruman.ui.components.ListItem;
-import com.scruman.ui.layout.size.*;
+import com.scruman.ui.layout.size.Bottom;
+import com.scruman.ui.layout.size.Horizontal;
+import com.scruman.ui.layout.size.Right;
+import com.scruman.ui.layout.size.Top;
 import com.scruman.ui.util.IconSize;
 import com.scruman.ui.util.LumoStyles;
 import com.scruman.ui.util.TextColor;
@@ -17,7 +19,10 @@ import com.scruman.ui.util.UIUtils;
 import com.scruman.ui.util.css.BorderRadius;
 import com.scruman.ui.util.css.FlexDirection;
 import com.scruman.ui.util.css.Shadow;
+import com.scruman.ui.views.Home;
+import com.scruman.ui.views.ViewFrame;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
@@ -31,21 +36,36 @@ import java.util.List;
 
 @PageTitle("Projects")
 @Route(value = "projects", layout = MainLayout.class)
-public class Projects extends ViewFrame implements HasLogger {
+public class ProjectsView extends ViewFrame implements HasLogger {
 
     private static final String CLASS_NAME = "projects";
 
+    private CurrentUser currentUser;
     private UserService userService;
     private ProjectService projectService;
 
-    private NewProjectDialog newProjectDialog = new NewProjectDialog();
+    private NewProjectDialog newProjectDialog;
 
     @Autowired
-    public Projects(UserService userService, ProjectService projectService) {
+    public ProjectsView(CurrentUser currentUser, UserService userService, ProjectService projectService) {
+        this.currentUser = currentUser;
         this.userService = userService;
         this.projectService = projectService;
 
         FlexBoxLayout header = createHeader(VaadinIcon.RECORDS, "Search Projects");
+        newProjectDialog = new NewProjectDialog(userService);
+        newProjectDialog.onSave(event -> {
+            newProjectDialog.close();
+            Project project = newProjectDialog.getProject();
+            projectService.save(project);
+            projectService.saveUserProjects(project.getUserProjects());
+            newProjectDialog.reset();
+        });
+
+        newProjectDialog.onCancel(event -> {
+            newProjectDialog.close();
+            newProjectDialog.reset();
+        });
 
         createCurrentUserProjects();
     }
@@ -61,14 +81,20 @@ public class Projects extends ViewFrame implements HasLogger {
     }
 
     private void createCurrentUserProjects() {
-        User currentUser = userService.getCurrentUser();
-        List<Project> currentUserProjects = projectService.getUserProjects(currentUser.getId());
+        List<Project> currentUserProjects = projectService.getUserProjects(currentUser.get().getId());
         getLogger().debug("Found " + currentUserProjects.size() + " projects..");
 
         FlexBoxLayout content = new FlexBoxLayout();
 
         for (Project p : currentUserProjects) {
-            content.add(new ProjectCard(p));
+            ProjectCard projectCard = new ProjectCard(p);
+            projectCard.onClick(e -> {
+                userService.saveLastOpenedProject(currentUser.get(), p);
+                UI.getCurrent().navigate(Home.class);
+                UI.getCurrent().getPage().reload();
+            });
+
+            content.add(projectCard);
         }
 
         NewProjectCard newProjectCard = new NewProjectCard(e -> newProjectDialog.open());

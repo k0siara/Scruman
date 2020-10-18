@@ -7,7 +7,7 @@ import com.scruman.backend.entity.User;
 import com.scruman.backend.service.ProjectService;
 import com.scruman.backend.service.SprintService;
 import com.scruman.backend.service.StoryService;
-import com.scruman.ui.MainLayout;
+import com.scruman.backend.service.UserService;
 import com.scruman.ui.components.IntegerOnlyTextField;
 import com.scruman.ui.util.LumoStyles;
 import com.scruman.ui.util.UIUtils;
@@ -20,6 +20,7 @@ import com.vaadin.flow.data.converter.StringToIntegerConverter;
 
 public class StoryDetailsForm extends FormLayout {
 
+    private UserService userService;
     private StoryService storyService;
     private SprintService sprintService;
     private ProjectService projectService;
@@ -38,7 +39,8 @@ public class StoryDetailsForm extends FormLayout {
 
     private BeanValidationBinder<Story> binder = new BeanValidationBinder<>(Story.class);
 
-    public StoryDetailsForm(StoryService storyService, SprintService sprintService, ProjectService projectService) {
+    public StoryDetailsForm(UserService userService, StoryService storyService, SprintService sprintService, ProjectService projectService) {
+        this.userService = userService;
         this.storyService = storyService;
         this.sprintService = sprintService;
         this.projectService = projectService;
@@ -92,13 +94,27 @@ public class StoryDetailsForm extends FormLayout {
     }
 
     private void setBinder() {
-        binder.forField(title).bind(Story::getTitle, Story::setTitle);
-        binder.forField(shortDescription).bind(Story::getShortDescription, Story::setShortDescription);
-        binder.forField(description).bind(Story::getDescription, Story::setDescription);
-        binder.forField(acceptanceCriteria).bind(Story::getAcceptanceCriteria, Story::setAcceptanceCriteria);
+        binder.forField(title)
+                .withNullRepresentation("")
+                .bind(Story::getTitle, Story::setTitle);
+
+        binder.forField(shortDescription)
+                .withNullRepresentation("")
+                .bind(Story::getShortDescription, Story::setShortDescription);
+
+        binder.forField(description)
+                .withNullRepresentation("")
+                .bind(Story::getDescription, Story::setDescription);
+
+        binder.forField(acceptanceCriteria)
+                .withNullRepresentation("")
+                .bind(Story::getAcceptanceCriteria, Story::setAcceptanceCriteria);
+
         binder.forField(storyPoints)
+                .withNullRepresentation("0")
                 .withConverter(new StringToIntegerConverter("Please enter a number"))
                 .bind(Story::getStoryPoints, Story::setStoryPoints);
+
         binder.forField(status).bind(Story::getStatus, Story::setStatus);
         binder.forField(sprint).bind(Story::getSprint, Story::setSprint);
         binder.forField(assignedTo).bind(Story::getAssignedTo, Story::setAssignedTo);
@@ -113,6 +129,7 @@ public class StoryDetailsForm extends FormLayout {
     }
 
     public Story getStory() {
+        story.setProject(userService.getCurrentUser().getLastOpenedProject());
         return story;
     }
 
@@ -137,7 +154,10 @@ public class StoryDetailsForm extends FormLayout {
 
     public void clearForm() {
         story = new Story();
-        Long currentProjectId = MainLayout.get().getAppBar().getUserProjectsComboBox().getValue().getId(); // TODO: 22-May-20 change fo db data
+        story.setAddedBy(userService.getCurrentUser());
+        binder.setBean(story);
+
+        Long currentProjectId = userService.getCurrentUser().getLastOpenedProject().getId();
 
         title.setValue("");
         shortDescription.setValue("");
@@ -153,8 +173,6 @@ public class StoryDetailsForm extends FormLayout {
 
         assignedTo.setItems(projectService.getProjectMembers(currentProjectId));
         assignedTo.setValue(assignedTo.getEmptyValue());
-
-        addedBy.setValue("");
     }
 
 }

@@ -11,6 +11,7 @@ import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.dom.DomEventListener;
 import com.vaadin.flow.router.AfterNavigationEvent;
 import com.vaadin.flow.router.HighlightConditions;
 import com.vaadin.flow.router.RouterLink;
@@ -203,4 +204,10 @@ public class NaviItem extends Div {
 			setSubItemsVisible(visible);
 		}
 	}
+
+	public void onClick(DomEventListener listener) {
+		((Anchor) link).removeHref();
+		link.getElement().addEventListener("click", listener);
+	}
+
 }

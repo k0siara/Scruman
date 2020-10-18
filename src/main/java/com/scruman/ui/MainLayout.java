@@ -2,15 +2,13 @@ package com.scruman.ui;
 
 import com.scruman.AppConstants;
 import com.scruman.app.HasLogger;
+import com.scruman.backend.beans.CurrentUser;
 import com.scruman.backend.entity.Project;
 import com.scruman.backend.entity.Sprint;
-import com.scruman.backend.entity.User;
 import com.scruman.backend.security.SecurityUtils;
-import com.scruman.backend.service.ProjectService;
 import com.scruman.backend.service.SprintService;
 import com.scruman.backend.service.UserService;
 import com.scruman.ui.components.FlexBoxLayout;
-import com.scruman.ui.components.UserProjectsComboBox;
 import com.scruman.ui.components.navigation.bar.AppBar;
 import com.scruman.ui.components.navigation.drawer.NaviDrawer;
 import com.scruman.ui.components.navigation.drawer.NaviItem;
@@ -21,7 +19,7 @@ import com.scruman.ui.util.css.Overflow;
 import com.scruman.ui.views.*;
 import com.scruman.ui.views.backlog.ProductBacklog;
 import com.scruman.ui.views.backlog.SprintBacklog;
-import com.scruman.ui.views.projects.Projects;
+import com.scruman.ui.views.projects.ProjectsView;
 import com.scruman.ui.views.settings.Settings;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasElement;
@@ -70,9 +68,8 @@ public class MainLayout extends FlexBoxLayout
 	private static final Logger log = LoggerFactory.getLogger(MainLayout.class);
 	private static final String CLASS_NAME = "root";
 
-	private UserService userService;
+	private CurrentUser currentUser;
 	private SprintService sprintService;
-	private ProjectService projectService;
 
 	private FlexBoxLayout row;
 	private NaviDrawer naviDrawer;
@@ -84,10 +81,9 @@ public class MainLayout extends FlexBoxLayout
 	private AppBar appBar;
 
 	@Autowired
-	public MainLayout(UserService userService, SprintService sprintService, ProjectService projectService) {
-		this.userService = userService;
+	public MainLayout(CurrentUser currentUser, SprintService sprintService) {
+		this.currentUser = currentUser;
 		this.sprintService = sprintService;
-		this.projectService = projectService;
 
 		VaadinSession.getCurrent()
 				.setErrorHandler((ErrorHandler) errorEvent -> {
@@ -101,7 +97,7 @@ public class MainLayout extends FlexBoxLayout
 		setFlexDirection(FlexDirection.COLUMN);
 		setSizeFull();
 
-		appBar = new AppBar("");
+		appBar = new AppBar("", currentUser);
 
 		// Initialise the UI building blocks
 		initStructure();
@@ -145,37 +141,34 @@ public class MainLayout extends FlexBoxLayout
 		menu.addNaviItem(VaadinIcon.HOME, "Home", Home.class);
 
 		if (SecurityUtils.isUserLoggedIn()) {
-			menu.addNaviItem(VaadinIcon.CLIPBOARD_TEXT, "Projects", Projects.class);
+			menu.addNaviItem(VaadinIcon.CLIPBOARD_TEXT, "Projects", ProjectsView.class);
 
-			UserProjectsComboBox userProjectsComboBox = appBar.getUserProjectsComboBox();
-			if (userProjectsComboBox.isEmpty()) {
-				User currentUser = userService.getCurrentUser();
-				if (currentUser.getLastOpenedProject() != null) {
-					userProjectsComboBox.setValue(currentUser.getLastOpenedProject());
-				}
-			}
 
-			if (!userProjectsComboBox.isEmpty()) {
-				Project currentProject = userProjectsComboBox.getValue();
-				List<Sprint> projectSprints = sprintService.findAllByProjectId(currentProject.getId());
-
+			Project lastOpenedProject = currentUser.get().getLastOpenedProject();
+			if (lastOpenedProject != null) {
 				NaviItem sprints = menu.addNaviItemWithoutLink(VaadinIcon.TASKS, "Sprints");
+				List<Sprint> projectSprints = sprintService.findAllByProjectId(lastOpenedProject.getId());
 				for (Sprint s : projectSprints) {
 					menu.addNaviItem(sprints, s.getTitle(),
 							new RouterLink(null, SprintBacklog.class, s.getId().toString()),
 							s.getId().toString());
 				}
 
+				NaviItem newSprintNavItem = menu.addNaviItem(sprints, "New Sprint", "");
+				newSprintNavItem.onClick(event -> {
+
+				});
+
 				menu.addNaviItem(VaadinIcon.CLIPBOARD_TEXT, "Product Backlog", ProductBacklog.class);
+				menu.addNaviItem(VaadinIcon.GROUP, "Members", Members.class);
 			}
 
-			menu.addNaviItem(VaadinIcon.GROUP, "Members", Members.class);
-			menu.addNaviItem(VaadinIcon.COG_O, "Settings", Settings.class);
-			menu.addNaviItem(VaadinIcon.SIGN_OUT, "Logout", AppConstants.LOGOUT_URL);
-		} else {
-			menu.addNaviItem(VaadinIcon.SIGN_IN_ALT, "Register", Register.class);
-			menu.addNaviItem(VaadinIcon.SIGN_IN, "Log in", Login.class);
-		}
+				menu.addNaviItem(VaadinIcon.COG_O, "Settings", Settings.class);
+				menu.addNaviItem(VaadinIcon.SIGN_OUT, "Logout", AppConstants.LOGOUT_URL);
+			} else {
+				menu.addNaviItem(VaadinIcon.SIGN_IN_ALT, "Register", Register.class);
+				menu.addNaviItem(VaadinIcon.SIGN_IN, "Log in", Login.class);
+			}
 	}
 
 	/**
@@ -193,28 +186,11 @@ public class MainLayout extends FlexBoxLayout
 		UIUtils.setTheme(Lumo.DARK, appBar);
 		setAppHeaderInner(appBar);
 
-		UserProjectsComboBox userProjectsComboBox = appBar.getUserProjectsComboBox();
 		if (SecurityUtils.isUserLoggedIn()) {
-			userProjectsComboBox.setProjects(userService.getCurrentUserProjects());
-
-			User currentUser = userService.getCurrentUser();
-			if (currentUser.getLastOpenedProject() != null) {
-				userProjectsComboBox.setValue(currentUser.getLastOpenedProject());
-			}
-
-			userProjectsComboBox.addValueChangeListener(e -> {
-				userService.saveLastOpenedProject(currentUser, e.getValue());
-
-				reloadMenu();
-				UI.getCurrent().navigate(Home.class);
-			});
-			userProjectsComboBox.setVisible(true);
-
 			Image avatar = appBar.getAvatar();
 			avatar.setSrc(IMG_PATH + "avatar.png");
 
 		} else {
-			userProjectsComboBox.setVisible(false);
 			appBar.getAvatar().setSrc(IMG_PATH + "avatar_anonymous.png");
 		}
 	}

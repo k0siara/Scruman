@@ -5,6 +5,7 @@ import com.scruman.backend.entity.Story;
 import com.scruman.backend.service.ProjectService;
 import com.scruman.backend.service.SprintService;
 import com.scruman.backend.service.StoryService;
+import com.scruman.backend.service.UserService;
 import com.scruman.ui.components.Badge;
 import com.scruman.ui.components.FlexBoxLayout;
 import com.scruman.ui.components.ListItem;
@@ -22,6 +23,7 @@ import com.scruman.ui.util.css.lumo.BadgeColor;
 import com.scruman.ui.views.SplitViewFrame;
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.ColumnTextAlign;
 import com.vaadin.flow.component.grid.Grid;
@@ -32,6 +34,7 @@ import java.time.format.DateTimeFormatter;
 
 public class StoriesView extends SplitViewFrame {
 
+    protected UserService userService;
     protected StoryService storyService;
     protected SprintService sprintService;
     protected ProjectService projectService;
@@ -41,11 +44,12 @@ public class StoriesView extends SplitViewFrame {
 
     protected StoryDetailsForm storyDetailsForm;
 
-    public StoriesView(StoryService storyService, SprintService sprintService, ProjectService projectService) {
+    public StoriesView(UserService userService, StoryService storyService, SprintService sprintService, ProjectService projectService) {
+        this.userService = userService;
         this.storyService = storyService;
         this.sprintService = sprintService;
         this.projectService = projectService;
-        this.storyDetailsForm = new StoryDetailsForm(storyService, sprintService, projectService);
+        this.storyDetailsForm = new StoryDetailsForm(this.userService, storyService, sprintService, projectService);
     }
 
     @Override
@@ -144,7 +148,10 @@ public class StoriesView extends SplitViewFrame {
 
         // Footer
         DetailsDrawerFooter footer = new DetailsDrawerFooter();
-        footer.addSaveListener(e -> storyService.save(storyDetailsForm.getStory()));
+        footer.addSaveListener(e -> {
+            storyService.save(storyDetailsForm.getStory());
+            UI.getCurrent().getPage().reload();
+        });
         footer.addCancelListener(e -> detailsDrawer.hide());
         detailsDrawer.setFooter(footer);
 

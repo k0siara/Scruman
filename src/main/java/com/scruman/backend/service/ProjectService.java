@@ -6,12 +6,15 @@ import com.scruman.backend.entity.User;
 import com.scruman.backend.entity.UserProject;
 import com.scruman.backend.exception.ProjectNotFoundException;
 import com.scruman.backend.repository.ProjectRepository;
+import com.scruman.backend.repository.UserProjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -19,10 +22,12 @@ import java.util.stream.Collectors;
 public class ProjectService {
 
     private ProjectRepository projectRepository;
+    private UserProjectRepository userProjectRepository;
 
     @Autowired
-    public ProjectService(ProjectRepository projectRepository) {
+    public ProjectService(ProjectRepository projectRepository, UserProjectRepository userProjectRepository) {
         this.projectRepository = projectRepository;
+        this.userProjectRepository = userProjectRepository;
     }
 
     public List<Sprint> getSprints(Long projectId) {
@@ -42,5 +47,13 @@ public class ProjectService {
 
     public List<Project> getUserProjects(Long userId) {
         return projectRepository.findAllByUserProjectsUserId(userId);
+    }
+
+    public Project save(Project project) {
+        return projectRepository.save(project);
+    }
+
+    public List<UserProject> saveUserProjects(Collection<UserProject> userProjects) {
+        return userProjectRepository.saveAll(userProjects);
     }
 }

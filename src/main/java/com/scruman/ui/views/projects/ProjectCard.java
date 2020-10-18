@@ -1,8 +1,6 @@
 package com.scruman.ui.views.projects;
 
-import com.scruman.AppConstants;
 import com.scruman.backend.entity.Project;
-import com.scruman.backend.security.SecurityUtils;
 import com.scruman.ui.components.FlexBoxLayout;
 import com.scruman.ui.layout.size.Bottom;
 import com.scruman.ui.layout.size.Left;
@@ -10,6 +8,8 @@ import com.scruman.ui.util.LumoStyles;
 import com.scruman.ui.util.UIUtils;
 import com.scruman.ui.util.css.BorderRadius;
 import com.scruman.ui.util.css.Shadow;
+import com.vaadin.flow.component.ClickEvent;
+import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.contextmenu.ContextMenu;
 import com.vaadin.flow.component.html.Div;
@@ -17,6 +17,7 @@ import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 
 public class ProjectCard extends FlexBoxLayout {
@@ -43,7 +44,6 @@ public class ProjectCard extends FlexBoxLayout {
         add(card);
 
         createContextMenu();
-        createLink();
     }
 
     private Div createHeader() {
@@ -79,12 +79,7 @@ public class ProjectCard extends FlexBoxLayout {
         contextMenu.addItem("Option 2", e -> {});
     }
 
-    private void createLink() {
-        addClickListener(e -> {
-            Notification.show("Project selected..");
-        });
+    public void onClick(ComponentEventListener<ClickEvent<FlexLayout>> listener) {
+        addClickListener(listener);
     }
-
-
-
 }
