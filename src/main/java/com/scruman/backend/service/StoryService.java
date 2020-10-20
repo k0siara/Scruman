@@ -4,22 +4,17 @@ import com.scruman.backend.entity.Status;
 import com.scruman.backend.entity.Story;
 import com.scruman.backend.repository.StatusRepository;
 import com.scruman.backend.repository.StoryRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class StoryService {
 
     private StoryRepository storyRepository;
     private StatusRepository statusRepository;
-
-    @Autowired
-    public StoryService(StoryRepository storyRepository, StatusRepository statusRepository) {
-        this.storyRepository = storyRepository;
-        this.statusRepository = statusRepository;
-    }
 
     public Story save(Story story) {
         return storyRepository.save(story);
