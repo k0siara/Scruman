@@ -7,7 +7,7 @@ import com.scruman.backend.entity.UserProject;
 import com.scruman.backend.exception.ProjectNotFoundException;
 import com.scruman.backend.repository.ProjectRepository;
 import com.scruman.backend.repository.UserProjectRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,16 +18,11 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
+@AllArgsConstructor
 public class ProjectService {
 
     private ProjectRepository projectRepository;
     private UserProjectRepository userProjectRepository;
-
-    @Autowired
-    public ProjectService(ProjectRepository projectRepository, UserProjectRepository userProjectRepository) {
-        this.projectRepository = projectRepository;
-        this.userProjectRepository = userProjectRepository;
-    }
 
     public List<Sprint> getSprints(Long projectId) {
         return new ArrayList<>(findById(projectId).getSprints());

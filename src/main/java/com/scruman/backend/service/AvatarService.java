@@ -1,36 +1,28 @@
 package com.scruman.backend.service;
 
-import com.scruman.backend.entity.User;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.scruman.backend.beans.CurrentUser;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
 
 @Service
+@AllArgsConstructor
 public class AvatarService {
 
-    private UserService userService;
-    private User currentUser;
-
-    @Autowired
-    public AvatarService(UserService userService) {
-        this.userService = userService;
-    }
+    private CurrentUser currentUser;
 
     public String getAvatarPath(){
         return hasUserOwnAvatar() ? getPathToUserAvatar() : getPathToAnonymousAvatar();
     }
 
     public boolean hasUserOwnAvatar() {
-        currentUser = userService.getCurrentUser();
-
-        File fileWithAvatar = new File("src/main/webapp/images/avatar_" + currentUser.getId() + ".png");
-
+        File fileWithAvatar = new File("src/main/webapp/images/avatar_" + currentUser.get().getId() + ".png");
         return fileWithAvatar.exists();
     }
 
     public String getPathToUserAvatar(){
-        return "images/avatar_" + currentUser.getId() + ".png";
+        return "images/avatar_" + currentUser.get().getId() + ".png";
     }
 
     public String getPathToAnonymousAvatar(){
