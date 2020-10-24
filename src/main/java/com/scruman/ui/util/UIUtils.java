@@ -1,5 +1,6 @@
 package com.scruman.ui.util;
 
+import com.scruman.ui.util.css.*;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -8,14 +9,8 @@ import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.textfield.TextFieldVariant;
-import com.scruman.backend.Address;
-import com.scruman.backend.DummyData;
-import com.scruman.ui.components.FlexBoxLayout;
-import com.scruman.ui.layout.size.Right;
-import com.scruman.ui.util.css.*;
 import com.vaadin.flow.server.VaadinService;
 import com.vaadin.flow.server.VaadinServletRequest;
 
@@ -300,29 +295,10 @@ public class UIUtils {
 
 	/* === MISC === */
 
-	public static String formatAddress(Address address) {
-		return address.getStreet() + "\n" + address.getCity() + ", "
-				+ address.getCity() + " " + address.getZip();
-	}
-
 	public static Button createFloatingActionButton(VaadinIcon icon) {
 		Button button = createPrimaryButton(icon);
 		button.addThemeName("fab");
 		return button;
-	}
-
-	public static FlexLayout createPhoneLayout() {
-		TextField prefix = new TextField();
-		prefix.setValue("+358");
-		prefix.setWidth("80px");
-
-		TextField number = new TextField();
-		number.setValue(DummyData.getPhoneNumber());
-
-		FlexBoxLayout layout = new FlexBoxLayout(prefix, number);
-		layout.setFlexGrow(1, number);
-		layout.setSpacing(Right.S);
-		return layout;
 	}
 
 	/* === NUMBERS === */
