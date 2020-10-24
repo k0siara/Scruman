@@ -1,14 +1,14 @@
 package com.scruman.ui.views;
 
+import com.scruman.ui.MainLayout;
+import com.scruman.ui.components.FlexBoxLayout;
+import com.scruman.ui.util.css.FlexDirection;
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Composite;
 import com.vaadin.flow.component.HasStyle;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.Div;
-import com.scruman.ui.MainLayout;
-import com.scruman.ui.components.FlexBoxLayout;
-import com.scruman.ui.util.css.FlexDirection;
 
 /**
  * A view frame that establishes app design guidelines. It consists of four
@@ -28,7 +28,7 @@ public class SplitViewFrame extends Composite<Div> implements HasStyle {
 	private Div header;
 
 	private FlexBoxLayout wrapper;
-	private Div content;
+	protected Div content;
 	private Div details;
 
 	private Div footer;

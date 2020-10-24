@@ -16,7 +16,10 @@ import com.scruman.ui.components.navigation.drawer.NaviMenu;
 import com.scruman.ui.util.UIUtils;
 import com.scruman.ui.util.css.FlexDirection;
 import com.scruman.ui.util.css.Overflow;
-import com.scruman.ui.views.*;
+import com.scruman.ui.views.Home;
+import com.scruman.ui.views.Login;
+import com.scruman.ui.views.Members;
+import com.scruman.ui.views.Register;
 import com.scruman.ui.views.backlog.ProductBacklog;
 import com.scruman.ui.views.backlog.SprintBacklog;
 import com.scruman.ui.views.projects.ProjectsView;
@@ -35,15 +38,14 @@ import com.vaadin.flow.router.AfterNavigationEvent;
 import com.vaadin.flow.router.AfterNavigationObserver;
 import com.vaadin.flow.router.RouterLayout;
 import com.vaadin.flow.router.RouterLink;
-import com.vaadin.flow.server.ErrorHandler;
-import com.vaadin.flow.server.InitialPageSettings;
-import com.vaadin.flow.server.PageConfigurator;
-import com.vaadin.flow.server.VaadinSession;
+import com.vaadin.flow.server.*;
 import com.vaadin.flow.theme.lumo.Lumo;
+import lombok.SneakyThrows;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.net.URI;
 import java.util.List;
 
 import static com.scruman.ui.util.UIUtils.IMG_PATH;
@@ -247,11 +249,24 @@ public class MainLayout extends FlexBoxLayout
 		return appBar;
 	}
 
+	@SneakyThrows
 	@Override
 	public void afterNavigation(AfterNavigationEvent event) {
 		NaviItem active = getActiveItem(event);
 		if (active != null) {
 			getAppBar().setTitle(active.getText());
+		}
+
+		VaadinServletRequest req = (VaadinServletRequest) VaadinService.getCurrentRequest();
+		StringBuffer uriString = req.getRequestURL();
+		URI uri = new URI(uriString.toString());
+
+		System.out.println(uri.getPath());
+
+		if (uri.getPath().contains("review")) {
+			getAppBar().setTitle("Sprint Review");
+		} else if (uri.getPath().contains("retrospective")) {
+			getAppBar().setTitle("Sprint Retrospective");
 		}
 	}
 

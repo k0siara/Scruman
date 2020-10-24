@@ -69,7 +69,7 @@ public class StoriesView extends SplitViewFrame {
         return content;
     }
 
-    private Grid createGrid() {
+    protected Grid createGrid() {
         grid = new Grid<>();
         grid.addItemDoubleClickListener(event -> showDetails(event.getItem()));
         grid.setDropMode(GridDropMode.BETWEEN);
@@ -173,7 +173,7 @@ public class StoriesView extends SplitViewFrame {
         detailsDrawer.show();
     }
 
-    private Component createAddButton() {
+    protected Component createAddButton() {
         Button addButton = UIUtils.createPrimaryButton("Add new");
         addButton.addClickListener(event -> createNew());
         return addButton;

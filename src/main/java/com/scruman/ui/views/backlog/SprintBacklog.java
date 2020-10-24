@@ -10,11 +10,23 @@ import com.scruman.backend.service.SprintService;
 import com.scruman.backend.service.StoryService;
 import com.scruman.backend.service.UserService;
 import com.scruman.ui.MainLayout;
+import com.scruman.ui.components.FlexBoxLayout;
 import com.scruman.ui.components.navigation.bar.AppBar;
+import com.scruman.ui.layout.size.Bottom;
+import com.scruman.ui.layout.size.Horizontal;
+import com.scruman.ui.layout.size.Top;
+import com.scruman.ui.util.UIUtils;
+import com.scruman.ui.util.css.BoxSizing;
+import com.scruman.ui.util.css.FlexDirection;
 import com.scruman.ui.views.Home;
+import com.scruman.ui.views.sprint_retrospective.SprintRetrospectiveView;
+import com.scruman.ui.views.sprint_review.SprintReviewView;
 import com.vaadin.flow.component.AttachEvent;
+import com.vaadin.flow.component.ClickEvent;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
-import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.router.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +42,20 @@ public class SprintBacklog extends StoriesView implements HasUrlParameter<String
     @Autowired
     public SprintBacklog(UserService userService, StoryService storyService, SprintService sprintService, ProjectService projectService) {
         super(userService, storyService, sprintService, projectService);
+    }
+
+    @Override
+    public void setViewContent(Component... components) {
+        content.removeAll();
+
+        FlexBoxLayout contentLayout = new FlexBoxLayout(createGrid(),
+                new HorizontalLayout(createAddButton(), createSprintReviewButton(), createSprintRetrospectiveButton()));
+        contentLayout.setPadding(Horizontal.RESPONSIVE_X, Top.RESPONSIVE_X, Bottom.RESPONSIVE_M);
+        contentLayout.setFlexDirection(FlexDirection.COLUMN);
+        contentLayout.setBoxSizing(BoxSizing.BORDER_BOX);
+        contentLayout.setHeightFull();
+
+        content.add(contentLayout);
     }
 
     @Override
@@ -91,5 +117,27 @@ public class SprintBacklog extends StoriesView implements HasUrlParameter<String
             UI.getCurrent().navigate(Home.class);
         }
 
+    }
+
+    private Component createSprintReviewButton() {
+        Button button = UIUtils.createButton("Sprint Review");
+        button.addClickListener(this::goToSprintReview);
+        return button;
+    }
+
+    private void goToSprintReview(ClickEvent<Button> event) {
+        UI.getCurrent().navigate(SprintReviewView.class, sprintId.toString());
+        UI.getCurrent().getPage().reload();
+    }
+
+    private Component createSprintRetrospectiveButton() {
+        Button button = UIUtils.createButton("Sprint Retrospective");
+        button.addClickListener(this::goToSprintRetrospective);
+        return button;
+    }
+
+    private void goToSprintRetrospective(ClickEvent<Button> event) {
+        UI.getCurrent().navigate(SprintRetrospectiveView.class, sprintId.toString());
+        UI.getCurrent().getPage().reload();
     }
 }

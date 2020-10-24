@@ -44,7 +44,6 @@ public class Settings extends ViewFrame {
 
     @Autowired
     public Settings(UserService userService, AvatarService avatarService) {
-
         this.avatarService = avatarService;
         this.userService = userService;
 
