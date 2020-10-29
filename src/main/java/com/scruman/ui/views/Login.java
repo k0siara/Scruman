@@ -17,7 +17,7 @@ public class Login extends VerticalLayout implements AfterNavigationObserver, Be
     public Login() {
         LoginI18n i18n = LoginI18n.createDefault();
         i18n.setHeader(new LoginI18n.Header());
-        i18n.getHeader().setTitle("Scruminium");
+        i18n.getHeader().setTitle("Scruman");
 
         login = new LoginOverlay();
         login.setI18n(i18n);

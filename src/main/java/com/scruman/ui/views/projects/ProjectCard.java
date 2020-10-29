@@ -16,7 +16,6 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 
@@ -51,7 +50,7 @@ public class ProjectCard extends FlexBoxLayout {
     }
 
     private Div createContent(Project project) {
-        Image image = new Image(UIUtils.IMG_PATH + "avatar.png", "");
+        Image image = new Image(UIUtils.IMG_PATH + "project.png", "");
         image.setHeight("50px");
         image.setWidth("50px");
 
